@@ -50,9 +50,9 @@ The following properties can be configured:
 		</tr>
 		<tr>
 			<td><code>units</code></td>
-			<td>What units to use?<br>
-				<br><b>Possible values:</b> <code>default</code> = Kelvin, <code>metric</code> = Celsius, <code>imperial</code> =Fahrenheit
-				<br><b>Default value:</b> <code>metric</code>
+			<td>What units to use. Specified by config.js<br>
+				<br><b>Possible values:</b> <code>config.units</code> = Specified by config.js, <code>default</code> = Kelvin, <code>metric</code> = Celsius, <code>imperial</code> =Fahrenheit
+				<br><b>Default value:</b> <code>config.units</code>
 			</td>
 		</tr>
 		<tr>
@@ -74,6 +74,27 @@ The following properties can be configured:
 			<td>Use 12 or 24 hour format.<br>
 				<br><b>Possible values:</b> <code>12</code> or <code>24</code>
 				<br><b>Default value:</b> uses value of <i>config.timeFormat</i>
+			</td>
+		</tr>
+		<tr>
+			<td><code>showPeriod</code></td>
+			<td>Show the period (am/pm) with 12 hour format<br>
+				<br><b>Possible values:</b> <code>true</code> or <code>false</code>
+				<br><b>Default value:</b> <code>true</code>
+			</td>
+		</tr>
+		<tr>
+			<td><code>showPeriodUpper</code></td>
+			<td>Show the period (AM/PM) with 12 hour format as uppercase<br>
+				<br><b>Possible values:</b> <code>true</code> or <code>false</code>
+				<br><b>Default value:</b> <code>false</code>
+			</td>
+		</tr>
+		<tr>
+			<td><code>showWindDirection</code></td>
+			<td>Show the wind direction next to the wind speed.<br>
+				<br><b>Possible values:</b> <code>true</code> or <code>false</code>
+				<br><b>Default value:</b> <code>false</code>
 			</td>
 		</tr>
 		<tr>
@@ -140,6 +161,5 @@ The following properties can be configured:
 		}</code>
 			</td>
 		</tr>
-
 	</tbody>
 </table>

@@ -18,7 +18,7 @@
 echo "Installing helper tools ..."
 sudo apt-get install curl wget build-essential unzip || exit
 ARM=$(uname -m) # Determine which Pi is running.
-NODE_LATEST="v5.10.1" # Set the latest version here.
+NODE_LATEST="v6.0.0" # Set the latest version here.
 DOWNLOAD_URL="https://nodejs.org/dist/latest/node-$NODE_LATEST-linux-$ARM.tar.gz" # Construct the download URL.
 
 echo "Installing Latest Node.js ..."
@@ -35,4 +35,4 @@ echo "Cloning MagicMirror ..."
 git clone -b v2-beta https://github.com/MichMich/MagicMirror.git || exit
 cd ~/MagicMirror  || exit
 npm install || exit
-echo "We're ready! Run `DISPLAY=:0 npm start` from the MagicMirror directory."
+echo "We're ready! Run [DISPLAY=:0 npm start] from the MagicMirror directory."

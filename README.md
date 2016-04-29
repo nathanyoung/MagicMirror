@@ -5,6 +5,7 @@
 	<a href="https://david-dm.org/MichMich/MagicMirror/v2-beta#info=devDependencies"><img src="https://david-dm.org/MichMich/MagicMirror/v2-beta/dev-status.svg" alt="devDependency Status"></a>
 	<a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-v5.10.1-brightgreen.svg" alt="Node Version"></a>
 	<a href="http://choosealicense.com/licenses/mit"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+	<a href="https://snyk.io/test/github/MichMich/MagicMirror/v2-beta"><img src="https://snyk.io/test/github/MichMich/MagicMirror/v2-beta/badge.svg" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/MichMich/MagicMirror/v2-beta" style="max-width:100%;"></a>
 </p>
 
 **MagicMirror²** is an open source modular smart mirror platform. With a growing list of installable modules, the **MagicMirror²** allows you to convert your hallway or bathroom mirror into your personal assistant. **MagicMirror²** is built by the creator of [the original MagicMirror](http://michaelteeuw.nl/tagged/magicmirror) with the incredible help of a [growing community of contributors](https://github.com/MichMich/MagicMirror/graphs/contributors). 
@@ -23,6 +24,9 @@ MagicMirror² focuses on a modular plugin system and uses [Electron](http://elec
 
 ## Usage 
 
+#### Raspberry Pi Support
+Electron, the app wrapper around MagicMirror², only supports the Raspberry Pi 2 & 3. The Raspberry Pi 1 is currently **not** supported. If you want to run this on a Raspberry Pi 1, use the [server only](#server-only) feature and setup a fullscreen browser yourself.
+
 #### Automatic Installer (Raspberry Pi Only!)
 
 Execute the following command on your Raspberry Pi to install MagicMirror²:
@@ -35,7 +39,7 @@ curl -sL https://raw.githubusercontent.com/MichMich/MagicMirror/v2-beta/installe
 1. Download and install the latest Node.js version.
 2. Clone the repository and check out the beta branch: `git clone -b v2-beta https://github.com/MichMich/MagicMirror`
 3. Enter the repository: `cd ~/MagicMirror`
-4. Install and run the app: `npm install && npm start` (You may have to restart your terminal before this works!)
+4. Install and run the app: `npm install && npm start`
 
 **Important:** `npm start` does **not** work via SSH, use `DISPLAY=:0 nohup npm start &` instead. This starts the mirror on the remote display.
 
@@ -48,6 +52,17 @@ In some cases, you want to start the application without an actual app window. I
 The following wiki links are helpful in the configuration of your MagicMirror² operating system:
 - [Configuring the Raspberry Pi](https://github.com/MichMich/MagicMirror/wiki/Configuring-the-Raspberry-Pi)
 - [Auto Starting MagicMirror](https://github.com/MichMich/MagicMirror/wiki/Auto-Starting-MagicMirror)
+
+#### Updating you MagicMirror²
+
+If you want to update your MagicMirror² to the latest version, use your terminal to go to your Magic Mirror folder and type the following command:
+
+````
+git pull
+```` 
+
+If you changed nothing more than the config or the modules, this should work without any problems. 
+Type `git status` to see your changes, if there are any, you can reset them with `git reset --hard`. After that, git pull should be possible.
 
 ## Configuration
 
@@ -62,6 +77,7 @@ The following properties can be configured:
 | `port` | The port on which the MagicMirror² server will run on. The default value is `8080`. |
 | `language` | The language of the interface. (Note: Not all elements will be localized.) Possible values are `en`, `nl`, `ru`, `fr`, etc., but the default value is `en`. |
 | `timeFormat` | The form of time notation that will be used. Possible values are `12` or `24`. The default is `24`. |
+| `units` | The units that will be used in the default weather modules. Possible values are `metric` or `imperial`. The default is `metric`. |
 | `modules` | An array of active modules. **The array must contain objects. See the next table below for more information.** |
 
 Module configuration:
@@ -87,19 +103,7 @@ The following modules are installed by default.
 - [**Hello World**](modules/default/helloworld)
 - [**Alert**](modules/default/alert)
 
-The following modules are created by their respective authors.
-
-- **[MMM-FRITZ-Box-Callmonitor by PaViRo](https://github.com/paviro/MMM-FRITZ-Box-Callmonitor)** <br> FRITZ!Box Callmonitor (Display an alert when someone is calling ...)
-
-- **[MMM-Facial-Recognition by PaViRo](https://github.com/paviro/MMM-Facial-Recognition)** <br> Facial recognition and module swapping based on the current user ...
-
-- **[MMM-Wunderlist by PaViRo](https://github.com/paviro/MMM-Wunderlist)** <br> Displays your Wunderlist todos on your mirror ...
- 
-- **[MMM-wordnik by Vendittelli](https://github.com/SVendittelli/MMM-wordnik)** <br> Get the word of the day, its definition, and origin ...
-
-- **[MMM-SystemTemperature by MichMich](https://github.com/MichMich/mmm-systemtemperature)** <br> Display your Raspberry Pi's processor temperature on your MagicMirror.
-
-**Note:** If you want to build your own modules, check out the [MagicMirror² Module Development Documentation](modules)
+For more available modules, check out out the wiki page: [MagicMirror² Modules](https://github.com/MichMich/MagicMirror/wiki/MagicMirror²-Modules). If you want to build your own modules, check out the [MagicMirror² Module Development Documentation](modules).
 
 ## Known issues
 

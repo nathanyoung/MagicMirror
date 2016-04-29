@@ -13,10 +13,13 @@ Module.register("currentweather",{
 	defaults: {
 		location: "",
 		appid: "",
-		units: "metric",
+		units: config.units,
 		updateInterval: 10 * 60 * 1000, // every 10 minutes
 		animationSpeed: 1000,
 		timeFormat: config.timeFormat,
+		showPeriod: true,
+		showPeriodUpper: false,
+		showWindDirection: false,
 		lang: config.language,
 
 		initialLoadDelay: 0, // 0 seconds delay
@@ -66,6 +69,7 @@ Module.register("currentweather",{
 		moment.locale(config.language);
 
 		this.windSpeed = null;
+		this.windDirection = null;
 		this.sunriseSunsetTime = null;
 		this.sunriseSunsetIcon = null;
 		this.temperature = null;
@@ -106,11 +110,16 @@ Module.register("currentweather",{
 		var windIcon = document.createElement("span");
 		windIcon.className = "wi wi-strong-wind dimmed";
 		small.appendChild(windIcon);
-
+		
 		var windSpeed = document.createElement("span");
 		windSpeed.innerHTML = " " + this.windSpeed;
 		small.appendChild(windSpeed);
-
+	
+		if (this.config.showWindDirection) {
+			var windDirection = document.createElement("span");
+			windDirection.innerHTML = " " + this.windDirection;
+			small.appendChild(windDirection);
+		}
 		var spacer = document.createElement("span");
 		spacer.innerHTML = "&nbsp;";
 		small.appendChild(spacer);
@@ -196,20 +205,35 @@ Module.register("currentweather",{
 	processWeather: function(data) {
 		this.temperature = this.roundValue(data.main.temp);
 		this.windSpeed = this.ms2Beaufort(this.roundValue(data.wind.speed));
+		this.windDirection = this.deg2Cardinal(data.wind.deg);
 		this.weatherType = this.config.iconTable[data.weather[0].icon];
 
-		var now = moment().format("x");
-		var sunrise = moment(data.sys.sunrise * 1000).format("x");
-		var sunset = moment(data.sys.sunset * 1000).format("x");
+		var now = new Date();
+		var sunrise = new Date(data.sys.sunrise * 1000);
+		var sunset = new Date(data.sys.sunset * 1000);
 
-		if (sunrise < now && sunset > now) {
-			this.sunriseSunsetTime = moment(data.sys.sunset * 1000).format((this.config.timeFormat === 24) ? "HH:mm" : "hh:mm a");
-			this.sunriseSunsetIcon = "wi-sunset";
-		} else {
-			this.sunriseSunsetTime = moment(data.sys.sunrise * 1000).format((this.config.timeFormat === 24) ? "HH:mm" : "hh:mm a");
-			this.sunriseSunsetIcon = "wi-sunrise";
-
+		// The moment().format('h') method has a bug on the Raspberry Pi. 
+		// So we need to generate the timestring manually.
+		// See issue: https://github.com/MichMich/MagicMirror/issues/181
+		var sunriseSunsetDateObject = (sunrise < now && sunset > now) ? sunset : sunrise;
+		var timeString = moment(sunriseSunsetDateObject).format('HH:mm');
+		if (this.config.timeFormat !== 24) {
+			var hours = sunriseSunsetDateObject.getHours() % 12 || 12;
+			if (this.config.showPeriod) {
+				if (this.config.showPeriodUpper) {
+					timeString = hours + moment(sunriseSunsetDateObject).format(':mm A');
+				} else {
+					timeString = hours + moment(sunriseSunsetDateObject).format(':mm a');
+				}
+			} else {
+    				timeString = hours + moment(sunriseSunsetDateObject).format(':mm');
+			}
 		}
+
+		this.sunriseSunsetTime = timeString;
+		this.sunriseSunsetIcon = (sunrise < now && sunset > now) ? "wi-sunset" : "wi-sunrise";
+
+
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
@@ -258,6 +282,44 @@ Module.register("currentweather",{
 	 *
 	 * return number - Rounded Temperature.
 	 */
+	 
+	deg2Cardinal: function(deg) {
+                if (deg>11.25 && deg<33.75){
+                        return "NNE";
+                }else if (deg>33.75 && deg<56.25){
+                        return "ENE";
+                }else if (deg>56.25 && deg<78.75){
+                        return "E";
+                }else if (deg>78.75 && deg<101.25){
+                        return "ESE";
+                }else if (deg>101.25 && deg<123.75){
+                        return "ESE";
+                }else if (deg>123.75 && deg<146.25){
+                        return "SE";
+                }else if (deg>146.25 && deg<168.75){
+                        return "SSE";
+                }else if (deg>168.75 && deg<191.25){
+                        return "S";
+                }else if (deg>191.25 && deg<213.75){
+                        return "SSW";
+                }else if (deg>213.75 && deg<236.25){
+                        return "SW";
+                }else if (deg>236.25 && deg<258.75){
+                        return "WSW";
+                }else if (deg>258.75 && deg<281.25){
+                        return "W";
+                }else if (deg>281.25 && deg<303.75){
+                        return "WNW";
+                }else if (deg>303.75 && deg<326.25){
+                        return "NW";
+                }else if (deg>326.25 && deg<348.75){
+                        return "NNW";
+                }else{
+                         return "N";
+                }
+	},
+
+	 
 	roundValue: function(temperature) {
 		return parseFloat(temperature).toFixed(1);
 	}

@@ -29,11 +29,6 @@ Module.register("calendar",{
 		titleReplace: {
 			"De verjaardag van ": ""
 		},
-		loadingText: "Loading events &hellip;",
-		emptyCalendarText: "No upcoming events.",
-
-		// TODO: It would be nice if there is a way to get this from the Moment.js locale.
-		todayText: "Today"
 	},
 
 	// Define required scripts.
@@ -44,6 +39,15 @@ Module.register("calendar",{
 	// Define required scripts.
 	getScripts: function() {
 		return ["moment.js"];
+	},
+
+	// Define required translations.
+	getTranslations: function() {
+		return {
+			en: "translations/en.json",
+			de: "translations/de.json",
+			nl: "translations/nl.json"
+		};
 	},
 
 	// Override start method.
@@ -89,7 +93,7 @@ Module.register("calendar",{
 		wrapper.className = "small";
 
 		if (events.length === 0) {
-			wrapper.innerHTML = (this.loaded) ? this.config.emptyCalendarText : this.config.loadingText;
+			wrapper.innerHTML = (this.loaded) ? this.translate("EMPTY") : this.translate("LOADING");
 			wrapper.className = "small dimmed";
 			return wrapper;
 		}
@@ -115,8 +119,30 @@ Module.register("calendar",{
 			eventWrapper.appendChild(titleWrapper);
 
 			var timeWrapper =  document.createElement("td");
-			timeWrapper.innerHTML = (event.today) ? this.config.todayText : moment(event.startDate,"x").fromNow();
-			// timeWrapper.innerHTML = moment(event.startDate,'x').format('lll');
+			//console.log(event.today);
+			var now = new Date();
+			if (event.fullDayEvent) {
+				if (event.today) {
+					timeWrapper.innerHTML = this.translate("TODAY");
+				} else if (event.startDate - now < 24 * 60 * 60 * 1000 && event.startDate - now > 0) {
+					timeWrapper.innerHTML = this.translate("TOMORROW");
+				} else {
+					timeWrapper.innerHTML =  moment(event.startDate,"x").fromNow();
+				}
+			} else {
+				if (event.startDate >= new Date()) {
+					if (event.startDate - now > 48 * 60 * 60 * 1000) {
+						// if the event is no longer than 2 days away, display the absolute time.
+						timeWrapper.innerHTML = moment(event.startDate,"x").fromNow();
+					} else {
+						timeWrapper.innerHTML = moment(event.startDate,"x").calendar();
+					}
+				} else {
+					timeWrapper.innerHTML =  this.translate("RUNNING") + ' ' + moment(event.endDate,"x").fromNow(true);
+				}
+			}
+			//timeWrapper.innerHTML += ' - '+ moment(event.startDate,'x').format('lll');
+			//console.log(event);
 			timeWrapper.className = "time light";
 			eventWrapper.appendChild(timeWrapper);
 
